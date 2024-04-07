@@ -63,6 +63,24 @@ services:
       placement:
         constraints: [node.role == manager]
 
+  grafana:
+    user: "0"
+    container_name: grafana
+    restart: unless-stopped
+    image: grafana
+    build:
+      context: ./grafana
+      dockerfile: Dockerfile
+    environment:
+      - GF_SECURITY_ADMIN_USER=grafana
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+    ports:
+      - 3001:3000
+    networks:
+      - grafana-prometheus-network
+
   prometheus:
     container_name: prometheus
     restart: unless-stopped
@@ -72,6 +90,7 @@ services:
     ports:
       - 9090:9090
     networks:
+      - grafana-prometheus-network
       - kong-prometheus-network
 
 volumes:
@@ -82,6 +101,8 @@ networks:
   backend-postgres-network:
     driver: overlay
   backend-kong-network:
+    driver: overlay
+  grafana-prometheus-network:
     driver: overlay
   kong-prometheus-network:
     driver: overlay
