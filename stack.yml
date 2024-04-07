@@ -115,7 +115,7 @@ services:
       - "9000:9000"
       - "8000:8000"
     volumes:
-      - portainer_data:/data
+      - portainer-data:/data
     networks:
       - agent-network
     deploy:
@@ -127,7 +127,7 @@ services:
 volumes:
   postgres:
   backend-static-files:
-  portainer_data:
+  portainer-data:
 
 networks:
   agent-network:
