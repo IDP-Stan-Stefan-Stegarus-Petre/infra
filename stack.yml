@@ -63,6 +63,17 @@ services:
       placement:
         constraints: [node.role == manager]
 
+  prometheus:
+    container_name: prometheus
+    restart: unless-stopped
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/config.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - kong-prometheus-network
+
 volumes:
   postgres:
   backend-static-files:
@@ -71,4 +82,6 @@ networks:
   backend-postgres-network:
     driver: overlay
   backend-kong-network:
+    driver: overlay
+  kong-prometheus-network:
     driver: overlay
