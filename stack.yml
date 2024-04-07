@@ -40,9 +40,10 @@ services:
   kong:
     container_name: kong
     restart: unless-stopped
-    image: kong:latest
-    volumes:
-      - ./kong:/usr/local/kong/declarative
+    image: idp-kong
+    build:
+      context: ./kong
+      dockerfile: Dockerfile
     environment:
       KONG_DATABASE: "off"
       KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
