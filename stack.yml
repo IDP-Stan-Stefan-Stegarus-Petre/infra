@@ -68,7 +68,7 @@ services:
     user: "0"
     container_name: grafana
     restart: unless-stopped
-    image: grafana
+    image: idp-grafana
     build:
       context: ./grafana
       dockerfile: Dockerfile
@@ -76,11 +76,14 @@ services:
       - GF_SECURITY_ADMIN_USER=grafana
       - GF_SECURITY_ADMIN_PASSWORD=grafana
     volumes:
-      - ./grafana-data:/var/lib/grafana
+      - grafana-data:/var/lib/grafana
     ports:
       - 3001:3000
     networks:
       - grafana-prometheus-network
+    deploy:
+      placement:
+        constraints: [node.role == manager]
 
   prometheus:
     container_name: prometheus
@@ -127,6 +130,7 @@ services:
 volumes:
   postgres:
   backend-static-files:
+  grafana-data:
   portainer-data:
 
 networks:
