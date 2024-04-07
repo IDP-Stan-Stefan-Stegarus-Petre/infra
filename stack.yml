@@ -36,6 +36,7 @@ services:
       # - 8443:8443
     networks:
       - backend-kong-network
+      - kong-prometheus-network
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -71,6 +72,8 @@ services:
     networks:
       - grafana-prometheus-network
       - kong-prometheus-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   agent:
     image: portainer/agent:2.20.1
