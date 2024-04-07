@@ -1,0 +1,26 @@
+_format_version: "2.1"
+
+services:
+  - name: backend-service
+    url: http://backend/api
+    routes:
+      - name: backend-routes
+        paths: 
+          - /api
+
+plugins:
+  - name: rate-limiting
+    config: 
+      minute: 120
+      limit_by: ip
+      policy: local
+
+  - name: cors
+    service: backend-service
+    config:
+      origins: 
+       - "*"
+
+  - name: bot-detection
+
+  - name: prometheus
