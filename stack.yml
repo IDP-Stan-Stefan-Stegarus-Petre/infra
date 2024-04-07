@@ -85,9 +85,10 @@ services:
   prometheus:
     container_name: prometheus
     restart: unless-stopped
-    image: prom/prometheus
-    volumes:
-      - ./prometheus/config.yml:/etc/prometheus/prometheus.yml
+    image: idp-prometheus
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile
     ports:
       - 9090:9090
     networks:
