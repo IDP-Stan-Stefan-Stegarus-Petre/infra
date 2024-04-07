@@ -14,27 +14,6 @@ services:
       placement:
         constraints: [node.role == manager]
 
-  backend:
-    restart: unless-stopped
-    image: ghcr.io/idp-stan-stefan-stegarus-petre/backend:latest
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:80"
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-    depends_on:
-      - postgres
-    volumes:
-      - backend-static-files:/static-files/api/media/
-    networks:
-      - backend-postgres-network
-      - backend-kong-network
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-
   kong:
     restart: unless-stopped
     image: ghcr.io/idp-stan-stefan-stegarus-petre/idp-kong:latest
