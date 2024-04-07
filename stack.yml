@@ -16,7 +16,7 @@ services:
 
   backend:
     restart: unless-stopped
-    image: backend
+    image: ghcr.io/idp-stan-stefan-stegarus-petre/backend:latest
     build:
       context: ../backend
       dockerfile: Dockerfile
@@ -37,7 +37,7 @@ services:
 
   kong:
     restart: unless-stopped
-    image: idp-kong
+    image: ghcr.io/idp-stan-stefan-stegarus-petre/idp-kong:latest
     build:
       context: ./kong
       dockerfile: Dockerfile
@@ -64,7 +64,7 @@ services:
   grafana:
     user: "0"
     restart: unless-stopped
-    image: idp-grafana
+    image: ghcr.io/idp-stan-stefan-stegarus-petre/idp-grafana:latest
     build:
       context: ./grafana
       dockerfile: Dockerfile
@@ -83,7 +83,7 @@ services:
 
   prometheus:
     restart: unless-stopped
-    image: idp-prometheus
+    image: ghcr.io/idp-stan-stefan-stegarus-petre/idp-prometheus:latest
     build:
       context: ./prometheus
       dockerfile: Dockerfile
