@@ -9,9 +9,37 @@ services:
       POSTGRES_PASSWORD: idp
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - backend-postgres-network
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  backend:
+    container_name: backend
+    restart: unless-stopped
+    image: backend
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      - postgres
+    volumes:
+      - backend-static-files:/static-files/api/media/
+    networks:
+      - backend-postgres-network
     deploy:
       placement:
         constraints: [node.role == manager]
 
 volumes:
   postgres:
+  backend-static-files:
+
+networks:
+  backend-postgres-network:
+    driver: overlay
