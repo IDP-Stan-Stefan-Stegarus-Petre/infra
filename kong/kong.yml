@@ -1,10 +1,10 @@
 _format_version: "2.1"
 
 services:
-  - name: backend-service
-    url: http://backend/api
+  - name: db-read-write-service
+    url: http://db-read-write-service/api
     routes:
-      - name: backend-routes
+      - name: db-read-write-service-routes
         paths: 
           - /api
 
@@ -16,7 +16,7 @@ plugins:
       policy: local
 
   - name: cors
-    service: backend-service
+    service: db-read-write-service-service
     config:
       origins: 
        - "*"

@@ -3,16 +3,32 @@ services:
     restart: unless-stopped
     image: postgres:13.2-alpine
     environment:
-      POSTGRES_USER: idp
-      POSTGRES_DB: idp
-      POSTGRES_PASSWORD: idp
+      POSTGRES_USER: mobylab-app
+      POSTGRES_DB: mobylab-app
+      POSTGRES_PASSWORD: mobylab-app
     volumes:
       - postgres:/var/lib/postgresql/data
     networks:
-      - backend-postgres-network
+      - db-read-write-service-postgres-network
     deploy:
       placement:
         constraints: [node.role == manager]
+
+  db-read-write-service:
+    restart: unless-stopped
+    image: ghcr.io/idp-stan-stefan-stegarus-petre/db-read-write-service:latest
+    build:
+      context: ../db-read-write-service
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      - postgres
+    networks:
+      - db-read-write-service-postgres-network
+      - db-read-write-service-kong-network
 
   kong:
     restart: unless-stopped
@@ -35,7 +51,7 @@ services:
       - 8002:8002
       # - 8443:8443
     networks:
-      - backend-kong-network
+      - db-read-write-service-kong-network
       - kong-prometheus-network
     deploy:
       placement:
@@ -106,16 +122,15 @@ services:
 
 volumes:
   postgres:
-  backend-static-files:
   grafana-data:
   portainer-data:
 
 networks:
   agent-network:
     driver: overlay
-  backend-postgres-network:
+  db-read-write-service-postgres-network:
     driver: overlay
-  backend-kong-network:
+  db-read-write-service-kong-network:
     driver: overlay
   grafana-prometheus-network:
     driver: overlay
