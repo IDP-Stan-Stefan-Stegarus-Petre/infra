@@ -21,14 +21,44 @@ services:
       context: ../db-read-write-service
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "5000:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:
       - postgres
     networks:
       - db-read-write-service-postgres-network
-      - db-read-write-service-kong-network
+      - kong-network
+
+  auth-service:
+    restart: unless-stopped
+    image: ghcr.io/idp-stan-stefan-stegarus-petre/auth-service:latest
+    build:
+      context: ../auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      - db-read-write-service
+    networks:
+      - kong-network
+
+  business-logic-service:
+    restart: unless-stopped
+    image: ghcr.io/idp-stan-stefan-stegarus-petre/business-logic-service:latest
+    build:
+      context: ../business-logic-service
+      dockerfile: Dockerfile
+    ports:
+      - "5002:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      - db-read-write-service
+    networks:
+      - kong-network
 
   kong:
     restart: unless-stopped
@@ -51,7 +81,7 @@ services:
       - 8002:8002
       # - 8443:8443
     networks:
-      - db-read-write-service-kong-network
+      - kong-network
       - kong-prometheus-network
     deploy:
       placement:
@@ -130,7 +160,7 @@ networks:
     driver: overlay
   db-read-write-service-postgres-network:
     driver: overlay
-  db-read-write-service-kong-network:
+  kong-network:
     driver: overlay
   grafana-prometheus-network:
     driver: overlay
