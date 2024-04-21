@@ -9,28 +9,8 @@ jobs:
       packages: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout infra repository
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          path: 'infra'
-      - name: Checkout db-read-write-service repository
-        uses: actions/checkout@v4
-        with:
-          repository: IDP-Stan-Stefan-Stegarus-Petre/db-read-write-service
-          ref: main
-          path: db-read-write-service
-      - name: Checkout business-logic-service repository
-        uses: actions/checkout@v4
-        with:
-          repository: IDP-Stan-Stefan-Stegarus-Petre/business-logic-service
-          ref: main
-          path: business-logic-service
-      - name: Checkout auth-service repository
-        uses: actions/checkout@v4
-        with:
-          repository: IDP-Stan-Stefan-Stegarus-Petre/auth-service
-          ref: main
-          path: auth-service
       - name: Login to ghcr
         uses: docker/login-action@v3.1.0
         with:
