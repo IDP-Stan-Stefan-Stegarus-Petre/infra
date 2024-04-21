@@ -6,6 +6,18 @@ services:
     routes:
       - name: db-read-write-service-routes
         paths: 
+          - /db
+  - name: auth-service
+    url: http://auth-service/api
+    routes:
+      - name: auth-service-routes
+        paths: 
+          - /auth
+  - name: business-logic-service
+    url: http://business-logic-service/api
+    routes:
+      - name: business-logic-service-routes
+        paths: 
           - /api
 
 plugins:
