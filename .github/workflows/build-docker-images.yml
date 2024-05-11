@@ -39,5 +39,6 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
       - name: Build and push images
         run: |
+          cd infra
           docker compose -f stack.yml build
           docker compose -f stack.yml push
