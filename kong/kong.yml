@@ -5,24 +5,36 @@ services:
     url: http://db-read-write-service/api
     routes:
       - name: db-read-write-service-routes
-        paths: 
+        paths:
           - /db
   - name: auth-service
     url: http://auth-service/api
     routes:
       - name: auth-service-routes
-        paths: 
+        paths:
           - /auth
   - name: business-logic-service
     url: http://business-logic-service/api
     routes:
       - name: business-logic-service-routes
-        paths: 
+        paths:
           - /api
+  - name: pgadmin
+    url: http://pgadmin
+    routes:
+      - name: pgadmin-routes
+        paths:
+          - /pgadmin
+  - name: grafana
+    url: http://grafana
+    routes:
+      - name: grafana-routes
+        paths:
+          - /grafana
 
 plugins:
   - name: rate-limiting
-    config: 
+    config:
       minute: 120
       limit_by: ip
       policy: local
@@ -30,8 +42,8 @@ plugins:
   - name: cors
     service: db-read-write-service-service
     config:
-      origins: 
-       - "*"
+      origins:
+        - "*"
 
   - name: bot-detection
 
