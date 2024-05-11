@@ -17,12 +17,14 @@ services:
 
   pgadmin:
     restart: unless-stopped
-    image: dpage/pgadmin4:5.6
+    image: dpage/pgadmin4:8.6
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@default.com
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - postgres
+    ports:
+      - 5050:80
     networks:
       - postgres-pgadmin-network
 
@@ -32,8 +34,6 @@ services:
     build:
       context: ../db-read-write-service
       dockerfile: Dockerfile
-    ports:
-      - "5000:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:
@@ -48,8 +48,6 @@ services:
     build:
       context: ../auth-service
       dockerfile: Dockerfile
-    ports:
-      - "5001:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:
@@ -63,8 +61,6 @@ services:
     build:
       context: ../business-logic-service
       dockerfile: Dockerfile
-    ports:
-      - "5002:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:
@@ -88,10 +84,9 @@ services:
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
       KONG_ADMIN_GUI_URL: http://localhost:8002
     ports:
-      # - 8000:8000
+      - 8000:8000
       - 8001:8001
       - 8002:8002
-      # - 8443:8443
     networks:
       - kong-network
       - kong-prometheus-network
@@ -100,7 +95,6 @@ services:
         constraints: [node.role == manager]
 
   grafana:
-    user: "0"
     restart: unless-stopped
     image: ghcr.io/idp-stan-stefan-stegarus-petre/idp-grafana:latest
     build:
@@ -109,6 +103,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=grafana
       - GF_SECURITY_ADMIN_PASSWORD=grafana
+      - GF_SERVER_ROOT_URL=http://grafana:3000
     volumes:
       - grafana-data:/var/lib/grafana
     ports:
@@ -125,8 +120,6 @@ services:
     build:
       context: ./prometheus
       dockerfile: Dockerfile
-    ports:
-      - 9090:9090
     networks:
       - grafana-prometheus-network
       - kong-prometheus-network
@@ -148,10 +141,6 @@ services:
   portainer:
     image: portainer/portainer-ce:2.20.1
     command: -H tcp://tasks.agent:9001 --tlsskipverify
-    ports:
-      - "9443:9443"
-      - "9000:9000"
-      - "8000:8000"
     volumes:
       - portainer-data:/data
     networks:
